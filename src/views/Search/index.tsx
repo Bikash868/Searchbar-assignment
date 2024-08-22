@@ -1,12 +1,12 @@
-import SearchBar from '@views/Search/components/searchBar';
-import empData from '@data/emplist.json';
+import SearchBar from '@views/Search/components/SearchBar';
+import userData from '@data/userlist.json';
 
 
 const Search = () => {
-  console.log("empData:",empData)
+  // console.log("empData:",empData)
   
   return (
-      <SearchBar data={empData}/>
+      <SearchBar data={userData}/>
   )
 }
 
