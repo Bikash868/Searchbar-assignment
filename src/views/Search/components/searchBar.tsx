@@ -41,6 +41,7 @@ const SearchBar: React.FC<Props> = ({ data }) => {
 
     const filteredData = data.filter(item => {
         return (
+            item.id.toLowerCase().includes(query.toLowerCase()) ||
             item.name.toLowerCase().includes(query.toLowerCase()) ||
             item.address.toLowerCase().includes(query.toLowerCase()) ||
             item.pincode.includes(query) ||
