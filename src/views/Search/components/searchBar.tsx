@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './style.css';
 
 import { SEARCH_BAR_PLACEHOLDER } from '@constants';
@@ -22,8 +22,11 @@ const SearchBar: React.FC<Props> = ({ data }) => {
     const [query, setQuery] = useState<string>('');
     const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
 
+    const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setQuery(e.target.value.trim());
+        setHighlightedIndex(-1); // Reseting highlighted index for new search query
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -49,6 +52,15 @@ const SearchBar: React.FC<Props> = ({ data }) => {
         setHighlightedIndex(index)
     }
 
+    useEffect(() => {
+        if (highlightedIndex >= 0 && itemRefs.current[highlightedIndex]) {
+          itemRefs.current[highlightedIndex]?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+          });
+        }
+      }, [highlightedIndex]);
+
     return (
         <div className="container" onKeyDown={handleKeyDown}>
             <input
@@ -63,14 +75,15 @@ const SearchBar: React.FC<Props> = ({ data }) => {
                     <div className="results-list">
                         {filteredData.length ? (
                             filteredData.map((user, index) => (
-                                <UserCard
-                                    key={user.id}
-                                    user={user}
-                                    index={index}
-                                    query={query}
-                                    isHighlighed={index === highlightedIndex}
-                                    onMouseEnter={handleMouseEnter}
-                                />
+                                <div key={user.id} ref={el => (itemRefs.current[index] = el)}>
+                                    <UserCard
+                                        user={user}
+                                        index={index}
+                                        query={query}
+                                        isHighlighed={index === highlightedIndex}
+                                        onMouseEnter={handleMouseEnter}
+                                    />
+                                </div>
                             ))
                         ) : (
                             <NoResult />
