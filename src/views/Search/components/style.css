@@ -1,0 +1,53 @@
+.container {
+    
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: 0.35rem;
+    margin-bottom: 0.625rem;
+    text-overflow: ellipsis;
+}
+
+.results-list {
+    max-height: 20rem;
+    overflow-y: auto;
+    border-radius: 0.25rem;
+    border: 1px solid #ccc;
+}
+
+.result-item {
+    display: flex;
+    cursor: pointer;
+    padding: 0.625rem;
+    flex-direction: column;
+}
+
+.result-item.empty {
+    text-align: center;
+}
+
+.highlighted-item {
+    background-color: #f0f0f0;
+}
+
+.item-id {
+    font-weight: bold;
+}
+
+.item-found {
+    color: grey;
+}
+
+.address {
+    color: #555;
+    font-size: 0.85rem;
+}
+
+.highlight {
+    color: blue;
+    font-weight: bold;
+    background-color: #d0ebff;
+}

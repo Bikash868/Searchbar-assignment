@@ -1,0 +1,1 @@
+export const SEARCH_BAR_PLACEHOLDER = "Search users by ID, address, name, items and pincode"
