@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './style.css';
 
+import { debounce } from '@utils';
 import { SEARCH_BAR_PLACEHOLDER } from '@constants';
 
 import NoResult from '@views/Search/components/NoResult';
@@ -20,12 +21,33 @@ type Props = {
 
 const SearchBar: React.FC<Props> = ({ data }) => {
     const [query, setQuery] = useState<string>('');
+    const [filteredData, setFilteredData] = useState<Item[]>([]);
     const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
 
     const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
+    const debouncedFilter = useCallback(
+        debounce((searchQuery: string) => {
+        const searchQueryLower = searchQuery.toLowerCase();
+          const filtered = data.filter(item => {
+            return (
+              item.id.toLowerCase().includes(searchQueryLower) ||
+              item.name.toLowerCase().includes(searchQueryLower) ||
+              item.address.toLowerCase().includes(searchQueryLower) ||
+              item.pincode.includes(searchQueryLower) ||
+              item.items.some(subItem => subItem.toLowerCase().includes(searchQueryLower))
+            );
+          });
+          console.log("filtered:",filtered)
+          setFilteredData(filtered);
+        }, 300), // 300 ms debounce delay
+        [data]
+    );
+
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setQuery(e.target.value.trim());
+        const searchValue = e.target.value.trim()
+        setQuery(searchValue);
+        debouncedFilter(searchValue);
         setHighlightedIndex(-1); // Reseting highlighted index for new search query
     };
 
@@ -39,15 +61,15 @@ const SearchBar: React.FC<Props> = ({ data }) => {
         }
     };
 
-    const filteredData = data.filter(item => {
-        return (
-            item.id.toLowerCase().includes(query.toLowerCase()) ||
-            item.name.toLowerCase().includes(query.toLowerCase()) ||
-            item.address.toLowerCase().includes(query.toLowerCase()) ||
-            item.pincode.includes(query) ||
-            item.items.some(subItem => subItem.toLowerCase().includes(query.toLowerCase()))
-        );
-    });
+    // const filteredData = data.filter(item => {
+    //     return (
+    //         item.id.toLowerCase().includes(query.toLowerCase()) ||
+    //         item.name.toLowerCase().includes(query.toLowerCase()) ||
+    //         item.address.toLowerCase().includes(query.toLowerCase()) ||
+    //         item.pincode.includes(query) ||
+    //         item.items.some(subItem => subItem.toLowerCase().includes(query.toLowerCase()))
+    //     );
+    // });
 
     const handleMouseEnter = (index:number) => {
         setHighlightedIndex(index)
